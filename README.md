@@ -24,7 +24,7 @@ Usage of ./aws-login:
     	Session name when assuming role
 ```
 
-Simplies way to export new temporary session variables is to execute:
+Simpliest way to export new temporary session variables is to execute:
 ```
 eval $(cmd/aws-login)
 ```
