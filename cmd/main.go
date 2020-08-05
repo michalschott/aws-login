@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -54,6 +55,17 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{
 		DisableColors: true,
 	})
+
+	// check if AWS_PROFILE is set
+	if os.Getenv("AWS_PROFILE") == "" {
+		log.Info("You have to set AWS_PROFILE environment variable first.")
+		os.Exit(1)
+	}
+
+	// unset old/invalid/expired variables
+	os.Unsetenv("AWS_ACCESS_KEY_ID")
+	os.Unsetenv("AWS_SECRET_ACCESS_KEY")
+	os.Unsetenv("AWS_SESSION_TOKEN")
 
 	// if MFA code is given, figure out MFA serial first
 	MfaSerial := ""
