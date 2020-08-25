@@ -44,8 +44,6 @@ func main() {
 	RoleSessionName := flag.String("session-name", "", "Session name when assuming role")
 	flag.Parse()
 
-	log.Debugf("aws-login: %s", version)
-
 	// logger configuration
 	if *Debug {
 		log.SetLevel(log.DebugLevel)
@@ -55,6 +53,8 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{
 		DisableColors: true,
 	})
+
+        log.Debugf("aws-login: %s", version)
 
 	// check if AWS_PROFILE is set
 	if os.Getenv("AWS_PROFILE") == "" {
