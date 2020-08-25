@@ -3,14 +3,14 @@
 
 VERSION=$(shell git symbolic-ref --short HEAD)-$(shell git rev-parse --short HEAD)
 
-all: vet cmd/aws-login
+all: vet aws-login
 
 vet:
-	go vet -mod=vendor cmd/*.go
+	go vet -mod=vendor cmd/aws-login/*.go
 
 clean:
-	rm -f cmd/aws-login
+	rm -f aws-login
 
-cmd/aws-login: cmd/*.go
-	go build -mod=vendor -ldflags "-X main.version=$(VERSION)" -o $@ cmd/*.go
+aws-login: cmd/aws-login/*.go
+	go build -mod=vendor -ldflags "-X main.version=$(VERSION)" -o $@ cmd/aws-login/*.go
 
