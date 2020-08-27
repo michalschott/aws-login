@@ -4,8 +4,12 @@ AWS login helper will help you setup session using aws-cli, no matter if you nee
 
 ## Build
 
+Clone locally and build with `make`. Move `aws-login` binary to your `PATH` ie. `mv aws-build ~/bin`
+
+or
+
 ```
-make
+go get github.com/michalschott/aws-login/cmd/aws-login
 ```
 
 ## Usage
