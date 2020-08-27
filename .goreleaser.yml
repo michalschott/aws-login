@@ -13,8 +13,6 @@ builds:
       - amd64
     main: ./cmd/aws-login
     binary: aws-login
-    ldflags:
-      - -s -w
 archives:
   - replacements:
       amd64: x86_64
