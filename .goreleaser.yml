@@ -1,0 +1,30 @@
+before:
+  hooks:
+  - go mod download
+builds:
+  - env:
+      - CGO_ENABLED=0
+    id: aws-login
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+    main: ./cmd/aws-login
+    binary: aws-login
+    ldflags:
+      - -s -w
+archives:
+  - replacements:
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

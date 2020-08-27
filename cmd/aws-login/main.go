@@ -21,6 +21,8 @@ const charset = "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0
 var (
 	seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 	version               = "unreleased"
+	commit                = "git commit"
+	date                  = "2020"
 )
 
 func randomStringWithCharset(length int, charset string) string {
@@ -54,7 +56,7 @@ func main() {
 		DisableColors: true,
 	})
 
-        log.Debugf("aws-login: %s", version)
+	log.Debugf("aws-login: %s, commit %s, build on %s", version, commit, date)
 
 	// check if AWS_PROFILE is set
 	if os.Getenv("AWS_PROFILE") == "" {
