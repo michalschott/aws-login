@@ -4,13 +4,11 @@ AWS login helper will help you setup session using aws-cli, no matter if you nee
 
 ## Build
 
-Clone locally and build with `make`. Move `aws-login` binary to your `PATH` ie. `mv aws-build ~/bin`
-
-or
-
 ```
 go get github.com/michalschott/aws-login/cmd/aws-login
 ```
+
+or grab binary from releases page.
 
 ## Usage
 
@@ -28,7 +26,7 @@ Usage of ./aws-login:
     	Session name when assuming role
 ```
 
-Simpliest way to export new temporary session variables is to execute:
+Simpliest way to export new temporary session variables is to execute (mac/linux):
 ```
 eval $(cmd/aws-login)
 ```
