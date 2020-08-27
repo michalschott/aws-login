@@ -1,3 +1,13 @@
-- name: GoReleaser Action
-  uses: goreleaser/goreleaser-action@v2.1.1
+name: goreleaser
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+    - name: GoReleaser Action
+      uses: goreleaser/goreleaser-action@v2.1.1
 
