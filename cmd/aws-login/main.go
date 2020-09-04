@@ -41,6 +41,7 @@ func main() {
 	Duration := flag.Int64("duration", 3600, "Session duration")
 	Debug := flag.Bool("debug", false, "Debug")
 	Role := flag.String("role", "", "Role to assume")
+	Account := flag.String("account", "", "Account number")
 	RoleSessionName := flag.String("session-name", "", "Session name when assuming role")
 	flag.Parse()
 
@@ -54,7 +55,7 @@ func main() {
 		DisableColors: true,
 	})
 
-        log.Debugf("aws-login: %s", version)
+	log.Debugf("aws-login: %s", version)
 
 	// check if AWS_PROFILE is set
 	if os.Getenv("AWS_PROFILE") == "" {
@@ -138,7 +139,7 @@ func main() {
 			assumeRoleInput.SerialNumber = aws.String(MfaSerial)
 			assumeRoleInput.TokenCode = aws.String(*MfaValue)
 		}
-		assumeRoleInput.RoleArn = aws.String(*Role)
+		assumeRoleInput.RoleArn = aws.String("arn:aws:iam::" + *Account + ":role/" + *Role)
 		if *RoleSessionName != "" {
 			assumeRoleInput.RoleSessionName = aws.String(*RoleSessionName)
 		} else {
