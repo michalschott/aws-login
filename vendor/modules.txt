@@ -1,4 +1,4 @@
-# github.com/aws/aws-sdk-go v1.34.11
+# github.com/aws/aws-sdk-go v1.34.17
 ## explicit
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/awserr
@@ -43,5 +43,7 @@ github.com/konsorten/go-windows-terminal-sequences
 # github.com/sirupsen/logrus v1.6.0
 ## explicit
 github.com/sirupsen/logrus
-# golang.org/x/sys v0.0.0-20190422165155-953cdadca894
+# golang.org/x/sys v0.0.0-20200831180312-196b9ba8737a
+## explicit
+golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
