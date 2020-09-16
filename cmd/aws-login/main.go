@@ -3,9 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math/rand"
 	"os"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -13,29 +11,16 @@ import (
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/sts"
 
+	"github.com/michalschott/aws-login/pkg/random"
+
 	log "github.com/sirupsen/logrus"
 )
 
-const charset = "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789"
-
 var (
-	seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	version               = "unreleased"
-	commit                = "git commit"
-	date                  = "2020"
+	version = "unreleased"
+	commit  = "git commit"
+	date    = "2020"
 )
-
-func randomStringWithCharset(length int, charset string) string {
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
-	}
-	return string(b)
-}
-
-func randomString(length int) string {
-	return randomStringWithCharset(length, charset)
-}
 
 func main() {
 	// flag parse
@@ -145,7 +130,7 @@ func main() {
 		if *RoleSessionName != "" {
 			assumeRoleInput.RoleSessionName = aws.String(*RoleSessionName)
 		} else {
-			randomSessionName := randomString(16)
+			randomSessionName := random.RandomString(16)
 			assumeRoleInput.RoleSessionName = &randomSessionName
 		}
 		log.Debug("Input request: ", assumeRoleInput)
