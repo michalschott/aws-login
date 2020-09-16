@@ -30,6 +30,7 @@ func main() {
 	Role := flag.String("role", "", "Role to assume")
 	Account := flag.String("account", "", "Account number")
 	RoleSessionName := flag.String("session-name", "", "Session name when assuming role")
+	NoUnset := flag.Bool("nounset", false, "Should current AWS* env variables be unset before assuming new creds. Used in chain-assume scenarios.")
 	flag.Parse()
 
 	// logger configuration
@@ -51,9 +52,12 @@ func main() {
 	}
 
 	// unset old/invalid/expired variables
-	os.Unsetenv("AWS_ACCESS_KEY_ID")
-	os.Unsetenv("AWS_SECRET_ACCESS_KEY")
-	os.Unsetenv("AWS_SESSION_TOKEN")
+	log.Debug("Unset variables is set to ", *NoUnset)
+	if !*NoUnset {
+		os.Unsetenv("AWS_ACCESS_KEY_ID")
+		os.Unsetenv("AWS_SECRET_ACCESS_KEY")
+		os.Unsetenv("AWS_SESSION_TOKEN")
+	}
 
 	// if MFA code is given, figure out MFA serial first
 	MfaSerial := ""
