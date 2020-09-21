@@ -62,7 +62,12 @@ func main() {
 	// if MFA code is given, figure out MFA serial first
 	MfaSerial := ""
 	if *MfaValue != "" {
-		iamSvc := iam.New(session.New())
+		session, err := session.NewSession()
+		if err != nil {
+			log.Info(err)
+		}
+
+		iamSvc := iam.New(session)
 		iamInput := &iam.ListMFADevicesInput{}
 
 		result, err := iamSvc.ListMFADevices(iamInput)
@@ -87,7 +92,12 @@ func main() {
 		MfaSerial = *result.MFADevices[0].SerialNumber
 	}
 
-	stsSvc := sts.New(session.New())
+	session, err := session.NewSession()
+	if err != nil {
+		log.Info(err)
+	}
+
+	stsSvc := sts.New(session)
 
 	if *Role == "" {
 		// just login with MFA
