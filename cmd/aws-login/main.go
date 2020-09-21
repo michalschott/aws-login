@@ -28,7 +28,7 @@ func main() {
 	Duration := flag.Int64("duration", 3600, "Session duration")
 	Debug := flag.Bool("debug", false, "Debug")
 	Role := flag.String("role", "", "Role to assume")
-	Account := flag.String("account", "", "Account number")
+	Account := flag.String("account", "", "Account number (if not set it will use sts.GetCallerIdentity call to figure out currently used accountID")
 	RoleSessionName := flag.String("session-name", "", "Session name when assuming role")
 	NoUnset := flag.Bool("nounset", false, "Should current AWS* env variables be unset before assuming new creds. Used in chain-assume scenarios.")
 	flag.Parse()
@@ -122,6 +122,24 @@ func main() {
 		fmt.Printf("export %s=%v\n", "AWS_SESSION_TOKEN", *result.Credentials.SessionToken)
 	} else {
 		// assume role
+
+		if *Account == "" {
+			// get current account number
+			result, err := stsSvc.GetCallerIdentity(&sts.GetCallerIdentityInput{})
+			if err != nil {
+				if aerr, ok := err.(awserr.Error); ok {
+					switch aerr.Code() {
+					default:
+						log.Info(aerr.Error())
+					}
+				} else {
+					log.Info(err.Error())
+				}
+				return
+			}
+
+			Account = result.Account
+		}
 
 		// prepare input AssumeRole
 		assumeRoleInput := &sts.AssumeRoleInput{}
