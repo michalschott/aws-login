@@ -62,7 +62,7 @@ func main() {
 		for _, v := range envs {
 			err := os.Unsetenv(v)
 			if err != nil {
-				log.Info("Can not unset env var %s", v)
+				log.Info("Can not unset env var ", v)
 			}
 		}
 	}
@@ -171,8 +171,8 @@ func main() {
 			assumeRoleInput.RoleSessionName = aws.String(*RoleSessionName)
 		} else {
 			randomStringConfig := random.RandomStringConfig{
-				16,
-				"abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789",
+				Length:  16,
+				Charset: "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789",
 			}
 
 			randomSessionName, err := randomStringConfig.New()
