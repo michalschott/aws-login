@@ -170,7 +170,16 @@ func main() {
 		if *RoleSessionName != "" {
 			assumeRoleInput.RoleSessionName = aws.String(*RoleSessionName)
 		} else {
-			randomSessionName := random.RandomString(16)
+			randomStringConfig := random.RandomStringConfig{
+				16,
+				"abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789",
+			}
+
+			randomSessionName, err := randomStringConfig.New()
+			if err != nil {
+				log.Fatal("Can not generate sesssion name.")
+			}
+
 			assumeRoleInput.RoleSessionName = &randomSessionName
 		}
 		log.Debug("Input request: ", assumeRoleInput)

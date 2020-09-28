@@ -5,20 +5,19 @@ import (
 	"math/big"
 )
 
-const charset = "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789"
-
-func randomStringWithCharset(length int, charset string) string {
-	b := make([]byte, length)
-	for i := range b {
-		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
-		if err != nil {
-			panic(err)
-		}
-		b[i] = charset[n.Int64()]
-	}
-	return string(b)
+type RandomStringConfig struct {
+	Length  int
+	Charset string
 }
 
-func RandomString(length int) string {
-	return randomStringWithCharset(length, charset)
+func (r *RandomStringConfig) New() (string, error) {
+	b := make([]byte, r.Length)
+	for i := range b {
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(r.Charset))))
+		if err != nil {
+			return "", err
+		}
+		b[i] = r.Charset[n.Int64()]
+	}
+	return string(b), nil
 }
