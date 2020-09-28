@@ -54,9 +54,17 @@ func main() {
 	// unset old/invalid/expired variables
 	log.Debug("Unset variables is set to ", *NoUnset)
 	if !*NoUnset {
-		os.Unsetenv("AWS_ACCESS_KEY_ID")
-		os.Unsetenv("AWS_SECRET_ACCESS_KEY")
-		os.Unsetenv("AWS_SESSION_TOKEN")
+		envs := []string{
+			"AWS_ACCESS_KEY_ID",
+			"AWS_SECRET_ACCESS_KEY",
+			"AWS_SESSION_TOKEN",
+		}
+		for _, v := range envs {
+			err := os.Unsetenv(v)
+			if err != nil {
+				log.Info("Can not unset env var %s", v)
+			}
+		}
 	}
 
 	// if MFA code is given, figure out MFA serial first
