@@ -43,7 +43,10 @@ github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
 # github.com/jmespath/go-jmespath v0.4.0
 github.com/jmespath/go-jmespath
-# github.com/sirupsen/logrus v1.7.0
+# github.com/magefile/mage v1.10.0
+github.com/magefile/mage/mg
+github.com/magefile/mage/sh
+# github.com/sirupsen/logrus v1.7.1
 ## explicit
 github.com/sirupsen/logrus
 # github.com/stretchr/testify v1.5.1
