@@ -2,10 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "ignorePaths": ["vendor/**"],
   "postUpdateOptions": ["gomodTidy"],
-  "packageRules": [
-    {
-      "matchPackageNames": ["aws-sdk-go"],
-      "schedule": ["after 9pm on sunday"]
-    }
+  "schedule": [
+    "before 3am on Monday"
   ]
 }
