@@ -4,5 +4,11 @@
   "postUpdateOptions": ["gomodTidy"],
   "schedule": [
     "before 3am on Monday"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    }
   ]
 }
