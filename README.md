@@ -9,19 +9,24 @@ Clone locally and build with `make`. Move `aws-login` binary to your `PATH` ie. 
 or
 
 ```
-go get github.com/michalschott/aws-login/cmd/aws-login
+go install github.com/michalschott/aws-login/cmd/aws-login
+~/go/bin/aws-login
 ```
 
 ## Usage
 
 ```
-Usage of ./aws-login:
+Usage of aws-login:
+  -account string
+    	Account number (if not set it will use sts.GetCallerIdentity call to figure out currently used accountID
   -debug
     	Debug
   -duration int
     	Session duration (default 3600)
   -mfa string
     	Value from MFA device
+  -nounset
+    	Should current AWS* env variables be unset before assuming new creds. Used in chain-assume scenarios.
   -role string
     	Role to assume
   -session-name string
