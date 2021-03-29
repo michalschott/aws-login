@@ -49,7 +49,7 @@ func main() {
 	if os.Getenv("AWS_PROFILE") == "" {
 		log.Info("AWS_PROFILE is not set, defaulting to 'default'.")
 		err := os.Setenv("AWS_PROFILE", "default")
-		if err {
+		if err != nil {
 			log.Fatal(err)
 		}
 	}
