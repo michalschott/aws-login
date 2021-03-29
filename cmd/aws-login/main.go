@@ -47,8 +47,11 @@ func main() {
 
 	// check if AWS_PROFILE is set
 	if os.Getenv("AWS_PROFILE") == "" {
-		log.Info("You have to set AWS_PROFILE environment variable first.")
-		os.Exit(1)
+		log.Info("AWS_PROFILE is not set, defaulting to 'default'.")
+		err := os.Setenv("AWS_PROFILE", "default")
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// unset old/invalid/expired variables
