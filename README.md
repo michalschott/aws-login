@@ -9,7 +9,7 @@ Clone locally and build with `make`. Move `aws-login` binary to your `PATH` ie. 
 or
 
 ```
-go install github.com/michalschott/aws-login/cmd/aws-login
+go install github.com/michalschott/aws-login/cmd/aws-login@latest
 ~/go/bin/aws-login
 ```
 
