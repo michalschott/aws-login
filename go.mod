@@ -3,7 +3,7 @@ module github.com/michalschott/aws-login
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.43.36
+	github.com/aws/aws-sdk-go v1.43.41
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.5.1 // indirect
 )
