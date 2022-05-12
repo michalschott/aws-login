@@ -4,7 +4,7 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
-    id: aws-login
+    id: aws-login-amd64
     goos:
       - linux
       - windows
@@ -15,7 +15,7 @@ builds:
     binary: aws-login
   - env:
       - CGO_ENABLED=0
-    id: aws-login
+    id: aws-login-arm64
     goos:
       - darwin
     goarch:
