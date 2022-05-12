@@ -13,6 +13,15 @@ builds:
       - amd64
     main: ./cmd/aws-login
     binary: aws-login
+  - env:
+      - CGO_ENABLED=0
+    id: aws-login
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    main: ./cmd/aws-login
+    binary: aws-login
 archives:
   - replacements:
       amd64: x86_64
