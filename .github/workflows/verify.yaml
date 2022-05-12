@@ -1,4 +1,4 @@
-name: Run Gosec
+name: Verify
 on:
   push:
     tags:
@@ -7,7 +7,7 @@ on:
       - master
   pull_request:
 jobs:
-  tests:
+  gosec:
     runs-on: ubuntu-latest
     env:
       GO111MODULE: on
@@ -18,3 +18,10 @@ jobs:
         uses: securego/gosec@v2.11.0
         with:
           args: ./...
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
