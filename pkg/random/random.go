@@ -21,3 +21,8 @@ func (r *RandomStringConfig) New() (string, error) {
 	}
 	return string(b), nil
 }
+
+func intToInt32(integer *int) *int32 {
+	converted := int32(*integer)
+	return &converted
+}
