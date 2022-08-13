@@ -1,15 +1,15 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/iam"
-	"github.com/aws/aws-sdk-go/service/sts"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/iam"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
 
 	"github.com/michalschott/aws-login/pkg/random"
 
@@ -25,7 +25,7 @@ var (
 func main() {
 	// flag parse
 	MfaValue := flag.String("mfa", "", "Value from MFA device")
-	Duration := flag.Int64("duration", 3600, "Session duration")
+	Duration := flag.Int("duration", 3600, "Session duration")
 	Debug := flag.Bool("debug", false, "Debug")
 	Role := flag.String("role", "", "Role to assume")
 	Account := flag.String("account", "", "Account number (if not set it will use sts.GetCallerIdentity call to figure out currently used accountID")
@@ -73,28 +73,17 @@ func main() {
 	// if MFA code is given, figure out MFA serial first
 	MfaSerial := ""
 	if *MfaValue != "" {
-		session, err := session.NewSession()
+		cfg, err := config.LoadDefaultConfig(context.TODO())
 		if err != nil {
 			log.Info(err)
 		}
 
-		iamSvc := iam.New(session)
+		iamSvc := iam.NewFromConfig(cfg)
 		iamInput := &iam.ListMFADevicesInput{}
 
-		result, err := iamSvc.ListMFADevices(iamInput)
+		result, err := iamSvc.ListMFADevices(context.TODO(), iamInput)
 		if err != nil {
-			if aerr, ok := err.(awserr.Error); ok {
-				switch aerr.Code() {
-				case iam.ErrCodeNoSuchEntityException:
-					log.Info(iam.ErrCodeNoSuchEntityException, aerr.Error())
-				case iam.ErrCodeServiceFailureException:
-					log.Info(iam.ErrCodeServiceFailureException, aerr.Error())
-				default:
-					log.Info(aerr.Error())
-				}
-			} else {
-				log.Info(err.Error())
-			}
+			log.Info(err.Error())
 			return
 		}
 
@@ -103,19 +92,19 @@ func main() {
 		MfaSerial = *result.MFADevices[0].SerialNumber
 	}
 
-	session, err := session.NewSession()
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		log.Info(err)
 	}
 
-	stsSvc := sts.New(session)
+	stsSvc := sts.NewFromConfig(cfg)
 
 	if *Role == "" {
 		// just login with MFA
 
 		// prepare input for GetSessionToken
 		input := &sts.GetSessionTokenInput{}
-		input.DurationSeconds = aws.Int64(*Duration)
+		input.DurationSeconds = random.IntToInt32(Duration)
 		if *MfaValue != "" && MfaSerial != "" {
 			input.SerialNumber = aws.String(MfaSerial)
 			input.TokenCode = aws.String(*MfaValue)
@@ -123,18 +112,9 @@ func main() {
 		log.Debug("Input request: ", input)
 
 		// login
-		result, err := stsSvc.GetSessionToken(input)
+		result, err := stsSvc.GetSessionToken(context.TODO(), input)
 		if err != nil {
-			if aerr, ok := err.(awserr.Error); ok {
-				switch aerr.Code() {
-				case sts.ErrCodeRegionDisabledException:
-					log.Info(sts.ErrCodeRegionDisabledException, aerr.Error())
-				default:
-					log.Info(aerr.Error())
-				}
-			} else {
-				log.Info(err.Error())
-			}
+			log.Info(err.Error())
 			return
 		}
 		log.Debug(result)
@@ -146,16 +126,9 @@ func main() {
 
 		if *Account == "" {
 			// get current account number
-			result, err := stsSvc.GetCallerIdentity(&sts.GetCallerIdentityInput{})
+			result, err := stsSvc.GetCallerIdentity(context.TODO(), &sts.GetCallerIdentityInput{})
 			if err != nil {
-				if aerr, ok := err.(awserr.Error); ok {
-					switch aerr.Code() {
-					default:
-						log.Info(aerr.Error())
-					}
-				} else {
-					log.Info(err.Error())
-				}
+				log.Info(err.Error())
 				return
 			}
 
@@ -164,7 +137,7 @@ func main() {
 
 		// prepare input AssumeRole
 		assumeRoleInput := &sts.AssumeRoleInput{}
-		assumeRoleInput.DurationSeconds = aws.Int64(*Duration)
+		assumeRoleInput.DurationSeconds = random.IntToInt32(Duration)
 		if *MfaValue != "" && MfaSerial != "" {
 			assumeRoleInput.SerialNumber = aws.String(MfaSerial)
 			assumeRoleInput.TokenCode = aws.String(*MfaValue)
@@ -187,16 +160,9 @@ func main() {
 		}
 		log.Debug("Input request: ", assumeRoleInput)
 
-		result, err := stsSvc.AssumeRole(assumeRoleInput)
+		result, err := stsSvc.AssumeRole(context.TODO(), assumeRoleInput)
 		if err != nil {
-			if aerr, ok := err.(awserr.Error); ok {
-				switch aerr.Code() {
-				default:
-					log.Info(aerr.Error())
-				}
-			} else {
-				log.Info(aerr.Error())
-			}
+			log.Info(err.Error())
 			return
 		}
 		log.Debug(result)
