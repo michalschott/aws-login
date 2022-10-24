@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/aws/aws-sdk-go-v2 v1.17.0
 	github.com/aws/aws-sdk-go-v2/config v1.17.9
-	github.com/aws/aws-sdk-go-v2/service/iam v1.18.20
+	github.com/aws/aws-sdk-go-v2/service/iam v1.18.21
 	github.com/aws/aws-sdk-go-v2/service/sts v1.17.0
 	github.com/sirupsen/logrus v1.9.0
 )
