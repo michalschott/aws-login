@@ -1,3 +1,11 @@
+# v1.18.23 (2022-10-26)
+
+* **Documentation**: Doc only update that corrects instances of CLI not using an entity.
+
+# v1.18.22 (2022-10-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.18.21 (2022-10-21)
 
 * **Dependency Update**: Updated to the latest SDK module versions
