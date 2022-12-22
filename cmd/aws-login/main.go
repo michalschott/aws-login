@@ -70,14 +70,14 @@ func main() {
 		}
 	}
 
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-west-1"))
+	if err != nil {
+		log.Info(err)
+	}
+
 	// if MFA code is given, figure out MFA serial first
 	MfaSerial := ""
 	if *MfaValue != "" {
-		cfg, err := config.LoadDefaultConfig(context.TODO())
-		if err != nil {
-			log.Info(err)
-		}
-
 		iamSvc := iam.NewFromConfig(cfg)
 		iamInput := &iam.ListMFADevicesInput{}
 
@@ -89,12 +89,11 @@ func main() {
 
 		log.Debug(result)
 
-		MfaSerial = *result.MFADevices[0].SerialNumber
-	}
-
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		log.Info(err)
+		if len(*&result.MFADevices) > 0 {
+			MfaSerial = *result.MFADevices[0].SerialNumber
+		} else {
+			log.Info("No MFA devices found")
+		}
 	}
 
 	stsSvc := sts.NewFromConfig(cfg)
