@@ -2,11 +2,9 @@
 
 AWS login helper will help you setup session using aws-cli, no matter if you need to provide MFA token or assume role.
 
-## Build
+## Install
 
-Clone locally and build with `make`. Move `aws-login` binary to your `PATH` ie. `mv aws-build ~/bin`
-
-or
+Either download binary from release, or you can build it yourself:
 
 ```
 go install github.com/michalschott/aws-login/cmd/aws-login@latest
