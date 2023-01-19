@@ -5,10 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 
 	"github.com/michalschott/aws-login/pkg/random"
@@ -75,28 +75,21 @@ func main() {
 		log.Info(err)
 	}
 
+	stsSvc := sts.NewFromConfig(cfg)
+
 	// if MFA code is given, figure out MFA serial first
 	MfaSerial := ""
 	if *MfaValue != "" {
-		iamSvc := iam.NewFromConfig(cfg)
-		iamInput := &iam.ListMFADevicesInput{}
+		stsInput := &sts.GetCallerIdentityInput{}
 
-		result, err := iamSvc.ListMFADevices(context.TODO(), iamInput)
+		result, err := stsSvc.GetCallerIdentity(context.TODO(), stsInput)
 		if err != nil {
 			log.Info(err.Error())
 			return
 		}
 
-		log.Debug(result)
-
-		if len(*&result.MFADevices) > 0 {
-			MfaSerial = *result.MFADevices[0].SerialNumber
-		} else {
-			log.Info("No MFA devices found")
-		}
+		MfaSerial = strings.Replace(aws.ToString(result.Arn), "user", "mfa", 1)
 	}
-
-	stsSvc := sts.NewFromConfig(cfg)
 
 	if *Role == "" {
 		// just login with MFA
