@@ -19,5 +19,5 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.12.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.6 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
-	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
 )
