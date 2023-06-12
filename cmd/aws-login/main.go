@@ -42,6 +42,7 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{
 		DisableColors: true,
 	})
+	log.SetFormatter(&log.JSONFormatter{})
 
 	log.Debugf("aws-login: %s, commit %s, build on %s", version, commit, date)
 
