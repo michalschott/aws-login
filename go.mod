@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.23.1
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.30.4
+	github.com/aws/aws-sdk-go-v2 v1.30.5
 	github.com/aws/aws-sdk-go-v2/config v1.27.31
 	github.com/aws/aws-sdk-go-v2/service/sts v1.30.5
 	github.com/sirupsen/logrus v1.9.3
