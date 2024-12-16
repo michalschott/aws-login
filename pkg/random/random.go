@@ -2,6 +2,7 @@ package random
 
 import (
 	"crypto/rand"
+	"errors"
 	"math/big"
 )
 
@@ -22,7 +23,10 @@ func (r *RandomStringConfig) New() (string, error) {
 	return string(b), nil
 }
 
-func IntToInt32(integer *int) *int32 {
-	converted := int32(*integer)
-	return &converted
+func IntToInt32(integer int) (int32, error) {
+	if integer > 2147483647 || integer < -2147483648 {
+		return 0, errors.New("int32 out of range")
+	}
+
+	return int32(integer), nil
 }

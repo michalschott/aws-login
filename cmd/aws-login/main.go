@@ -120,7 +120,11 @@ func main() {
 
 		// prepare input for GetSessionToken
 		input := &sts.GetSessionTokenInput{}
-		input.DurationSeconds = random.IntToInt32(Duration)
+		*input.DurationSeconds, err = random.IntToInt32(*Duration)
+		if err != nil {
+			log.Info(err.Error())
+			return
+		}
 		if *MfaValue != "" && MfaSerial != "" {
 			input.SerialNumber = aws.String(MfaSerial)
 			input.TokenCode = aws.String(*MfaValue)
@@ -151,7 +155,11 @@ func main() {
 
 		// prepare input AssumeRole
 		assumeRoleInput := &sts.AssumeRoleInput{}
-		assumeRoleInput.DurationSeconds = random.IntToInt32(Duration)
+		*assumeRoleInput.DurationSeconds, err = random.IntToInt32(*Duration)
+		if err != nil {
+			log.Info(err.Error())
+			return
+		}
 		if *MfaValue != "" && MfaSerial != "" {
 			assumeRoleInput.SerialNumber = aws.String(MfaSerial)
 			assumeRoleInput.TokenCode = aws.String(*MfaValue)
