@@ -1,6 +1,6 @@
 module github.com/michalschott/aws-login
 
-go 1.21
+go 1.23
 
 toolchain go1.23.4
 
