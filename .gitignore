@@ -1,2 +1,2 @@
 dist
-aws-login
+cmd/aws-login/aws-login

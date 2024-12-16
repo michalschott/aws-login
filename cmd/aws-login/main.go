@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -21,6 +22,24 @@ var (
 	commit  = "git commit"
 	date    = "2020"
 )
+
+type credentials struct {
+	awsAccessKeyId     string
+	awsSecretAccessKey string
+	awsSessionToken    string
+}
+
+func (c *credentials) New(awsAccessKeyId string, awsSecretAccessKey string, awsSessionToken string) {
+	c.awsAccessKeyId = awsAccessKeyId
+	c.awsSecretAccessKey = awsSecretAccessKey
+	c.awsSessionToken = awsSessionToken
+}
+
+func (c *credentials) Print(w io.Writer) {
+	fmt.Fprintf(w, "export %s=%v\n", "AWS_ACCESS_KEY_ID", c.awsAccessKeyId)
+	fmt.Fprintf(w, "export %s=%v\n", "AWS_SECRET_ACCESS_KEY", c.awsSecretAccessKey)
+	fmt.Fprintf(w, "export %s=%v\n", "AWS_SESSION_TOKEN", c.awsSessionToken)
+}
 
 func main() {
 	// flag parse
@@ -71,7 +90,9 @@ func main() {
 		}
 	}
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-west-1"))
+	ctx := context.Background()
+
+	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion("eu-west-1"))
 	if err != nil {
 		log.Info(err)
 	}
@@ -83,7 +104,7 @@ func main() {
 	if *MfaValue != "" {
 		stsInput := &sts.GetCallerIdentityInput{}
 
-		result, err := stsSvc.GetCallerIdentity(context.TODO(), stsInput)
+		result, err := stsSvc.GetCallerIdentity(ctx, stsInput)
 		if err != nil {
 			log.Info(err.Error())
 			return
@@ -91,6 +112,8 @@ func main() {
 
 		MfaSerial = strings.Replace(aws.ToString(result.Arn), "user", "mfa", 1)
 	}
+
+	credentials := new(credentials)
 
 	if *Role == "" {
 		// just login with MFA
@@ -105,21 +128,19 @@ func main() {
 		log.Debug("Input request: ", input)
 
 		// login
-		result, err := stsSvc.GetSessionToken(context.TODO(), input)
+		result, err := stsSvc.GetSessionToken(ctx, input)
 		if err != nil {
 			log.Info(err.Error())
 			return
 		}
 		log.Debug(result)
-		fmt.Printf("export %s=%v\n", "AWS_ACCESS_KEY_ID", *result.Credentials.AccessKeyId)
-		fmt.Printf("export %s=%v\n", "AWS_SECRET_ACCESS_KEY", *result.Credentials.SecretAccessKey)
-		fmt.Printf("export %s=%v\n", "AWS_SESSION_TOKEN", *result.Credentials.SessionToken)
+		credentials.New(*result.Credentials.AccessKeyId, *result.Credentials.SecretAccessKey, *result.Credentials.SessionToken)
 	} else {
 		// assume role
 
 		if *Account == "" {
 			// get current account number
-			result, err := stsSvc.GetCallerIdentity(context.TODO(), &sts.GetCallerIdentityInput{})
+			result, err := stsSvc.GetCallerIdentity(ctx, &sts.GetCallerIdentityInput{})
 			if err != nil {
 				log.Info(err.Error())
 				return
@@ -153,14 +174,14 @@ func main() {
 		}
 		log.Debug("Input request: ", assumeRoleInput)
 
-		result, err := stsSvc.AssumeRole(context.TODO(), assumeRoleInput)
+		result, err := stsSvc.AssumeRole(ctx, assumeRoleInput)
 		if err != nil {
 			log.Info(err.Error())
 			return
 		}
 		log.Debug(result)
-		fmt.Printf("export %s=%v\n", "AWS_ACCESS_KEY_ID", *result.Credentials.AccessKeyId)
-		fmt.Printf("export %s=%v\n", "AWS_SECRET_ACCESS_KEY", *result.Credentials.SecretAccessKey)
-		fmt.Printf("export %s=%v\n", "AWS_SESSION_TOKEN", *result.Credentials.SessionToken)
+		credentials.New(*result.Credentials.AccessKeyId, *result.Credentials.SecretAccessKey, *result.Credentials.SessionToken)
 	}
+
+	credentials.Print(os.Stdout)
 }
