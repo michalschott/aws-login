@@ -2,7 +2,7 @@ module github.com/michalschott/aws-login
 
 go 1.23
 
-toolchain go1.24.3
+toolchain go1.24.4
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.36.4
