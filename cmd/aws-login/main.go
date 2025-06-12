@@ -36,9 +36,23 @@ func (c *credentials) New(awsAccessKeyId string, awsSecretAccessKey string, awsS
 }
 
 func (c *credentials) Print(w io.Writer) {
-	fmt.Fprintf(w, "export %s=%v\n", "AWS_ACCESS_KEY_ID", c.awsAccessKeyId)
-	fmt.Fprintf(w, "export %s=%v\n", "AWS_SECRET_ACCESS_KEY", c.awsSecretAccessKey)
-	fmt.Fprintf(w, "export %s=%v\n", "AWS_SESSION_TOKEN", c.awsSessionToken)
+	_, err := fmt.Fprintf(w, "export %s=%v\n", "AWS_ACCESS_KEY_ID", c.awsAccessKeyId)
+	if err != nil {
+		log.Debugf("Error writing to buffer")
+		return
+	}
+
+	_, err = fmt.Fprintf(w, "export %s=%v\n", "AWS_SECRET_ACCESS_KEY", c.awsSecretAccessKey)
+	if err != nil {
+		log.Debugf("Error writing to buffer")
+		return
+	}
+
+	_, err = fmt.Fprintf(w, "export %s=%v\n", "AWS_SESSION_TOKEN", c.awsSessionToken)
+	if err != nil {
+		log.Debugf("Error writing to buffer")
+		return
+	}
 }
 
 func main() {
